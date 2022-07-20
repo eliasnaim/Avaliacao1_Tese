@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jul 20 13:35:10 2022
+
+@author: elias
+"""
+
 # Importanto as bibliotecas
 
 from scipy.optimize import curve_fit
@@ -25,6 +32,8 @@ BBOX = {
 
 }
 
+
+
 def elements(agg,**params):
     res = requests.get(OHSOME_API+"/elements"+agg,params)
     return res
@@ -33,6 +42,8 @@ def elements(agg,**params):
     
 chaves=[]
 overflows_tot=[]
+
+overflows_dict = {}
 
 for chave, valor in BBOX.items():
 
@@ -78,10 +89,27 @@ for chave, valor in BBOX.items():
 
     except:
         overflows += 1
-    print(overflows)
+        
+    print(type(overflows))
+    
+    overflows_tot.append(int(overflows))
+    
+    if not chave in overflows_dict:
+        overflows_dict[chave] = [int(overflows)]
+    else:
+        overflows_dict[chave].append(int(overflows))
+    
+    
+    
     
     
 #Saída dos Dados
     
-saida=pd.DataFrame(overflows_tot,index=chaves)
+print(overflows_tot)
+
+
+    
+saida=pd.DataFrame(overflows_dict).transpose()
+
+print(saida)
 saida.to_csv("C:/Users/elias/Desktop/Aplicações_Tese_Resultados/Avaliação_01/Overflow_txt/overflows.txt")
